@@ -1,7 +1,11 @@
-export default function Home() {
+import { cn } from '@/shared/lib/cn';
+
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-black text-white">
-      <h1>Menu Mate</h1>
-    </div>
+    <main className="min-h-dvh px-4">
+      <section
+        className={cn('mx-auto grid min-h-dvh place-items-center py-16', 'max-w-screen-md')}
+      ></section>
+    </main>
   );
 }
