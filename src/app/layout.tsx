@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { pretendard } from '@/styles/fonts/fonts';
-import '../styles/globals.css';
+import '@/styles/globals.css';
+import { cn } from '@/shared/lib/cn';
 
 export const metadata: Metadata = {
   title: 'MenuMate',
@@ -15,9 +16,8 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`${pretendard.variable} min-h-dvh bg-[var(--mm-bg)] text-[var(--mm-text)] antialiased`}
+        className={cn(pretendard.variable, 'bg-[var(--mm-bg)] text-[var(--mm-text)] antialiased')}
       >
-        {/* 전역 공통 레이아웃 뼈대: main + footer 같은 걸 나중에 추가 가능 */}
         {children}
       </body>
     </html>
