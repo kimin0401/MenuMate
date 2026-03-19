@@ -7,6 +7,9 @@ import { useState } from 'react';
 export const SearchSection = () => {
   const [inputValue, setInputValue] = useState('');
   const [submittedKeyword, setSubmittedKeyword] = useState('');
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (value: string) => {
     setInputValue(value);
