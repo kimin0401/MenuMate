@@ -1,4 +1,5 @@
 import type { SearchResult } from '@/features/search/model/types';
+import { SearchResultCard } from '@/features/search/ui/SearchResultCard';
 
 type SearchResultsProps = {
   results: SearchResult[];
@@ -25,9 +26,9 @@ export const SearchResults = ({ results, isLoading, error, hasSearched }: Search
   }
 
   return (
-    <ul>
+    <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {results.map((result) => (
-        <li key={result.id}>{result.title}</li>
+        <SearchResultCard key={result.id} result={result} />
       ))}
     </ul>
   );
