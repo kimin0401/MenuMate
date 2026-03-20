@@ -1,6 +1,7 @@
 // 검색 결과 UI 담당 컴포넌트 예정
 
 import { SearchResult } from '@/features/search/model/types';
+import Image from 'next/image';
 
 type Props = {
   result: SearchResult;
@@ -9,8 +10,8 @@ type Props = {
 export const SearchResultCard = ({ result }: Props) => {
   return (
     <li className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
-      <div className="aspect-video w-full overflow-hidden bg-gray-100">
-        <img src={result.imageUrl} alt={result.title} className="h-full w-full object-cover" />
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-100">
+        <Image src={result.imageUrl} alt={result.title} fill className="object-cover" />
       </div>
 
       <div className="flex flex-col gap-3 p-4">
