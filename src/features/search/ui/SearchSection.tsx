@@ -3,8 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { SearchBar } from '@/shared/ui/SearchBar';
-import type { SearchResult } from '@/features/search/model/types';
-import { searchMockRecipes } from '@/features/search/lib/searchMockRecipes';
+import type { SearchApiResponse, SearchResult } from '@/features/search/model/types';
 import { SearchResults } from '@/features/search/ui/SearchResults';
 
 export const SearchSection = () => {
@@ -15,47 +14,56 @@ export const SearchSection = () => {
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const handleChange = (value: string) => {
-    setInputValue(value);
-  };
-
   const handleSubmit = () => {
-    const trimmed = inputValue.trim();
+    const trimmedValue = inputValue.trim();
 
-    if (!trimmed) return;
+    if (!trimmedValue) {
+      return;
+    }
 
-    setSubmittedKeyword(trimmed);
+    setSubmittedKeyword(trimmedValue);
     setHasSearched(true);
   };
 
   useEffect(() => {
-    if (!submittedKeyword) return;
+    if (!submittedKeyword) {
+      return;
+    }
 
-    const fetchResults = async () => {
+    const fetchSearchResults = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        const data = await searchMockRecipes(submittedKeyword);
-        setResults(data);
-      } catch (err) {
-        setError('검색 중 문제가 발생했습니다.');
+        const response = await fetch(`/api/search?keyword=${encodeURIComponent(submittedKeyword)}`);
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.message || '검색 요청 중 오류가 발생했습니다.');
+        }
+        const data: SearchApiResponse = await response.json();
+        setResults(data.results);
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+        setError(errorMessage);
         setResults([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchResults();
+    fetchSearchResults();
   }, [submittedKeyword]);
 
   return (
     <div>
       <SearchBar
         value={inputValue}
-        onChange={handleChange}
+        onChange={setInputValue}
         onSubmit={handleSubmit}
         placeholder="검색어를 입력하세요"
+        disabled={isLoading}
       />
       <SearchResults
         results={results}
