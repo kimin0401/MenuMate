@@ -1,11 +1,14 @@
 // 검색 유스케이스의 진입점
 import type { SearchResult } from '@/features/search/model/types';
 import { searchFoodApiRecipes } from '@/features/search/api/foodApi/searchFoodApiRecipes';
+import { mapFoodApiRecipeToSearchResult } from '@/features/search/lib/mappers/mapFoodApiRecipeToSearchResult';
 
 export const searchRecipes = async (keyword: string): Promise<SearchResult[]> => {
   const rawRecipes = await searchFoodApiRecipes(keyword);
 
-  console.log('[searchRecipes] rawRecipes:', rawRecipes);
+  const results = rawRecipes.map(mapFoodApiRecipeToSearchResult);
 
-  return [];
+  console.log('[searchRecipes] results:', results);
+
+  return results;
 };
