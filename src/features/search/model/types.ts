@@ -18,3 +18,14 @@ export type FoodApiRecipeRaw = {
   HASH_TAG?: string;
   ATT_FILE_NO_MAIN?: string;
 };
+
+export type FoodApiResponseRaw = {
+  COOKRCP01?: {
+    row?: FoodApiRecipeRaw[];
+    RESULT?: {
+      CODE?: string;
+      MSG?: string;
+    };
+    total_count?: string;
+  };
+};
