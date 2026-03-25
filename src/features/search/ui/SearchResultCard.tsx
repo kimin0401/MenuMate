@@ -11,7 +11,13 @@ export const SearchResultCard = ({ result }: Props) => {
   return (
     <li className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-100">
-        <Image src={result.imageUrl} alt={result.name} fill className="object-cover" />
+        <Image
+          src={result.imageUrl}
+          alt={result.name}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
+          className="object-cover"
+        />
       </div>
 
       <div className="flex flex-col gap-3 p-4">
