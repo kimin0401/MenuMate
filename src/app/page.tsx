@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/cn';
-import { BrandLogo } from '@/shared/ui/brandLogo';
+import { BrandLogo } from '@/shared/ui/BrandLogo';
 import { SearchSection } from '@/features/search/ui/SearchSection';
 
 export default function HomePage() {
