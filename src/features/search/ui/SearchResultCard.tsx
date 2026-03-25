@@ -1,7 +1,7 @@
 // 검색 결과 UI 담당 컴포넌트 예정
 
 import { SearchResult } from '@/features/search/model/types';
-import Image from 'next/image';
+import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
 
 type Props = {
   result: SearchResult;
@@ -11,10 +11,10 @@ export const SearchResultCard = ({ result }: Props) => {
   return (
     <li className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md">
       <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-gray-100">
-        <Image
+        <ImageWithFallback
+          key={`${result.id}-${result.imageUrl}`}
           src={result.imageUrl}
           alt={result.name}
-          fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
           className="object-cover"
         />
