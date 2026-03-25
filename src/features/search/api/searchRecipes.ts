@@ -8,7 +8,5 @@ export const searchRecipes = async (keyword: string): Promise<SearchResult[]> =>
 
   const results = rawRecipes.map(mapFoodApiRecipeToSearchResult);
 
-  console.log('[searchRecipes] results:', results);
-
   return results;
 };
