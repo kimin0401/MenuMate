@@ -1,6 +1,7 @@
 // 외부 API Raw 타입을 내부 타입으로 정규화하는 함수
 import type { RecipeDetail, RecipeDetailRaw } from '@/features/recipes/model/types';
 
+// extractRecipeSteps: 외부 API의 펼쳐진 필드 구조를 배열로 바꾸기 위해 별도의 함수로 분리. 공백 제거 및 빈 문자열 제거
 const extractRecipeSteps = (raw: RecipeDetailRaw): string[] => {
   const manualSteps = [
     raw.MANUAL01,
@@ -27,7 +28,7 @@ const extractRecipeSteps = (raw: RecipeDetailRaw): string[] => {
 
   return manualSteps.map((step) => step?.trim() ?? '').filter((step) => step.length > 0);
 };
-
+// normalizeRecipeDetail: 전체 Raw 데이터를 내부 타입으로 바꾸는 메인 함수
 export const normalizeRecipeDetail = (raw: RecipeDetailRaw): RecipeDetail => {
   return {
     id: raw.RCP_SEQ?.trim() ?? '',
