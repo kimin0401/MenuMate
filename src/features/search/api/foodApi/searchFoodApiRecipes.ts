@@ -1,11 +1,12 @@
 // 외부 API 전용 어댑터 - 식약처 API와 직접 통신, URL 조립, fetch, raw 응답 반환
 import type { FoodApiRecipeRaw, FoodApiResponseRaw } from '@/features/search/model/types';
-
-const FOOD_API_BASE_URL = 'https://openapi.foodsafetykorea.go.kr/api/';
-const FOOD_API_SERVICE_ID = 'COOKRCP01';
-const FOOD_API_DATA_TYPE = 'json';
-const SEARCH_START_INDEX = 1;
-const SEARCH_END_INDEX = 20;
+import {
+  FOOD_API_BASE_URL,
+  FOOD_API_SERVICE_ID,
+  FOOD_API_DATA_TYPE,
+  DEFAULT_START_INDEX,
+  DEFAULT_END_INDEX,
+} from '@/shared/api/foodApi';
 
 export const searchFoodApiRecipes = async (keyword: string): Promise<FoodApiRecipeRaw[]> => {
   const apiKey = process.env.FOOD_API_KEY;
@@ -22,7 +23,7 @@ export const searchFoodApiRecipes = async (keyword: string): Promise<FoodApiReci
 
   const requestUrl =
     `${FOOD_API_BASE_URL}/${apiKey}/${FOOD_API_SERVICE_ID}/${FOOD_API_DATA_TYPE}` +
-    `/${SEARCH_START_INDEX}/${SEARCH_END_INDEX}/RCP_NM=${encodeURIComponent(trimmedKeyword)}`;
+    `/${DEFAULT_START_INDEX}/${DEFAULT_END_INDEX}/RCP_NM=${encodeURIComponent(trimmedKeyword)}`;
 
   const response = await fetch(requestUrl, {
     method: 'GET',
