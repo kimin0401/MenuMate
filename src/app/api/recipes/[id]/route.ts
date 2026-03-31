@@ -72,6 +72,11 @@ export const GET = async (_request: Request, context: RouteContext) => {
     }
 
     const data: FoodApiResponse = await response.json();
+    // 디버깅 로그 (임시)
+    console.log('===== FOOD API RESPONSE =====');
+    console.log(JSON.stringify(data, null, 2));
+    console.log('=============================');
+
     const resultCode = getFoodApiResultCode(data);
 
     if (resultCode && resultCode !== 'INFO-000' && resultCode !== 'INFO-200') {
