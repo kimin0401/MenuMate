@@ -1,7 +1,8 @@
 //레시피 페이지: 레시피 상세 페이지로, 레시피의 제목, 이미지, 재료, 조리법 등을 보여줌
 //TODO: 하드코딩된 localhost를 정리
-import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
 import type { RecipeDetail } from '@/features/recipes/model/types';
+import { getRecipeDetail } from '@/features/recipes/api/getRecipeDetail';
+import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
 
 type Props = {
   params: Promise<{
@@ -12,21 +13,17 @@ type Props = {
 const RecipePage = async ({ params }: Props) => {
   const { id } = await params;
 
-  const response = await fetch(`http://localhost:3000/api/recipes/${id}`, {
-    cache: 'no-store',
-  });
+  let recipe: RecipeDetail;
 
-  if (!response.ok) {
+  try {
+    recipe = await getRecipeDetail(id);
+  } catch (error) {
     return (
       <main className="mx-auto max-w-3xl px-4 py-10">
-        <p className="text-sm text-red-500">
-          레시피를 불러오지 못했습니다. status: {response.status}
-        </p>
+        <p className="text-sm text-red-500">레시피를 불러오지 못했습니다.</p>
       </main>
     );
   }
-
-  const recipe: RecipeDetail = await response.json();
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-10">
@@ -40,6 +37,7 @@ const RecipePage = async ({ params }: Props) => {
             className="object-cover"
           />
         </div>
+
         <div className="flex flex-col gap-2">
           <h1 className="text-3xl font-bold text-gray-900">{recipe.name}</h1>
         </div>
