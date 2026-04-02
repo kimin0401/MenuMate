@@ -1,4 +1,6 @@
 // URL에서 id 받기 -> 외부 API에서 해당 데이터 찾기 -> 찾은 데이터 정규화 -> 프론트에 JSON으로 반환
+//TODO: 외부 API가 id 단건 필터를 안정적으로 지원하지 않는 것으로 보임. 한번에 1000개씩 받아와서 서버에서 id로 필터링하는 방식으로 구현.
+// 하지만 비효율적이므로 개선안이 있다면 수정
 import { NextResponse } from 'next/server';
 
 import { normalizeRecipeDetail } from '@/features/recipes/lib/normalizeRecipeDetail';
@@ -23,9 +25,8 @@ type FoodApiResponse = {
   };
 };
 
-// 공용 상수를 안쓰는 이유: 추후 공용 API 범위와 달라질 수 있기 때문에 따로 상수화
 const RECIPE_DETAIL_START_INDEX = 1;
-const RECIPE_DETAIL_END_INDEX = 20;
+const RECIPE_DETAIL_END_INDEX = 1000;
 
 const getRecipeRows = (data: FoodApiResponse): RecipeDetailRaw[] => {
   return data.COOKRCP01?.row ?? [];
@@ -60,7 +61,7 @@ export const GET = async (_request: Request, context: RouteContext) => {
 
     const requestUrl =
       `${FOOD_API_BASE_URL}/${apiKey}/${FOOD_API_SERVICE_ID}/${FOOD_API_DATA_TYPE}` +
-      `/${RECIPE_DETAIL_START_INDEX}/${RECIPE_DETAIL_END_INDEX}/RCP_SEQ=${encodeURIComponent(recipeId)}`;
+      `/${RECIPE_DETAIL_START_INDEX}/${RECIPE_DETAIL_END_INDEX}`;
 
     const response = await fetch(requestUrl, {
       method: 'GET',
@@ -72,11 +73,6 @@ export const GET = async (_request: Request, context: RouteContext) => {
     }
 
     const data: FoodApiResponse = await response.json();
-    // 디버깅 로그 (임시)
-    console.log('===== FOOD API RESPONSE =====');
-    console.log(JSON.stringify(data, null, 2));
-    console.log('=============================');
-
     const resultCode = getFoodApiResultCode(data);
 
     if (resultCode && resultCode !== 'INFO-000' && resultCode !== 'INFO-200') {
