@@ -1,10 +1,19 @@
 @import 'tailwindcss';
-/* 사용자 정의 CSS 변수 선언 - 사용자 정의 속성은 반드시 --로 시작해야 한다 */
+
 :root {
-  /* background (cream) */
+  /* page background */
   --mm-bg: #fff6e9;
-  --mm-surface: #ffffff;
-  --mm-card: #fff1de;
+
+  /* section / card surface */
+  --mm-surface: #fffdf8;
+  --mm-surface-soft: #fffaf3;
+
+  /* inner card / list item */
+  --mm-inner-card: #fff9f0;
+  --mm-inner-card-soft: #fff7ec;
+
+  /* border */
+  --mm-border: #f5e9d8;
 
   /* text */
   --mm-text: #2a2a2a;
@@ -14,6 +23,9 @@
   --mm-primary: #f59e0b;
   --mm-primary-hover: #d97706;
   --mm-primary-soft: #fef3c7;
+
+  /* accent / subtle highlight */
+  --mm-accent-soft: #fff4dd;
 }
 
 body {
@@ -22,4 +34,6 @@ body {
     system-ui,
     -apple-system,
     sans-serif;
+  background-color: var(--mm-bg);
+  color: var(--mm-text);
 }
