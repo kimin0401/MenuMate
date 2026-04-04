@@ -1,4 +1,5 @@
 // 레시피 상세 조회의 핵심 서버 로직 담당
+//TODO: 조회 id가 1000이 넘어가면 조회되지 않는 문제 존재
 import 'server-only';
 
 import { normalizeRecipeDetail } from '@/features/recipes/lib/normalizeRecipeDetail';
@@ -53,6 +54,7 @@ export const getRecipeDetail = async (recipeId: string): Promise<RecipeDetail> =
     `${FOOD_API_BASE_URL}/${apiKey}/${FOOD_API_SERVICE_ID}/${FOOD_API_DATA_TYPE}` +
     `/${RECIPE_DETAIL_START_INDEX}/${RECIPE_DETAIL_END_INDEX}`;
 
+  console.log(requestUrl);
   const response = await fetch(requestUrl, {
     method: 'GET',
     cache: 'no-store',
