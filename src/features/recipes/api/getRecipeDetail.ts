@@ -1,5 +1,6 @@
 // 레시피 상세 조회의 핵심 서버 로직 담당
 //TODO: 조회 id가 1000이 넘어가면 조회되지 않는 문제 존재
+//RCP_SEQ가 조회에 영향이 없는 걸로 보임. RCP_NM 기준으로 조회하는 방법 고려할 것.
 import 'server-only';
 
 import { normalizeRecipeDetail } from '@/features/recipes/lib/normalizeRecipeDetail';

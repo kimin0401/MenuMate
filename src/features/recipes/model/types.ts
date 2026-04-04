@@ -24,6 +24,31 @@ export type RecipeDetailRaw = {
   MANUAL18?: string;
   MANUAL19?: string;
   MANUAL20?: string;
+  MANUAL_IMG01?: string;
+  MANUAL_IMG02?: string;
+  MANUAL_IMG03?: string;
+  MANUAL_IMG04?: string;
+  MANUAL_IMG05?: string;
+  MANUAL_IMG06?: string;
+  MANUAL_IMG07?: string;
+  MANUAL_IMG08?: string;
+  MANUAL_IMG09?: string;
+  MANUAL_IMG10?: string;
+  MANUAL_IMG11?: string;
+  MANUAL_IMG12?: string;
+  MANUAL_IMG13?: string;
+  MANUAL_IMG14?: string;
+  MANUAL_IMG15?: string;
+  MANUAL_IMG16?: string;
+  MANUAL_IMG17?: string;
+  MANUAL_IMG18?: string;
+  MANUAL_IMG19?: string;
+  MANUAL_IMG20?: string;
+};
+
+export type RecipeStep = {
+  description: string;
+  imageUrl?: string;
 };
 
 export type RecipeDetail = {
@@ -31,5 +56,5 @@ export type RecipeDetail = {
   name: string;
   imageUrl: string;
   ingredients: string;
-  steps: string[];
+  steps: RecipeStep[];
 };
