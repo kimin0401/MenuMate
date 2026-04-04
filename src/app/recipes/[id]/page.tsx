@@ -110,7 +110,7 @@ const RecipePage = async ({ params }: Props) => {
                     {index + 1}
                   </div>
 
-                  <p className="text-sm leading-7 text-[var(--mm-text)]">{step}</p>
+                  <p className="text-sm leading-7 text-[var(--mm-text)]">{step.description}</p>
                 </li>
               ))}
             </ol>
