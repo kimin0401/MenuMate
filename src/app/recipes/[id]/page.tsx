@@ -30,6 +30,11 @@ const INGREDIENT_ITEM_STYLE =
 const STEP_ITEM_STYLE =
   'flex items-start gap-3 rounded-2xl bg-[var(--mm-inner-card-soft)] px-4 py-4';
 
+const STEP_CONTENT_STYLE = 'flex min-w-0 flex-1 flex-col gap-3';
+
+const STEP_IMAGE_WRAPPER_STYLE =
+  'relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-[var(--mm-border)] bg-[var(--mm-surface)]';
+
 const RecipePage = async ({ params }: Props) => {
   const { id } = await params;
 
@@ -110,7 +115,21 @@ const RecipePage = async ({ params }: Props) => {
                     {index + 1}
                   </div>
 
-                  <p className="text-sm leading-7 text-[var(--mm-text)]">{step.description}</p>
+                  <div className={STEP_CONTENT_STYLE}>
+                    {step.imageUrl && (
+                      <div className={STEP_IMAGE_WRAPPER_STYLE}>
+                        <ImageWithFallback
+                          key={`${recipe.id}-step-image-${index}-${step.imageUrl}`}
+                          src={step.imageUrl}
+                          alt={`${recipe.name} 조리 순서 ${index + 1}`}
+                          sizes="(max-width: 768px) 100vw, 640px"
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+
+                    <p className="text-sm leading-7 text-[var(--mm-text)]">{step.description}</p>
+                  </div>
                 </li>
               ))}
             </ol>
