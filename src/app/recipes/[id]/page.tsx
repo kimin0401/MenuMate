@@ -2,6 +2,7 @@
 import type { RecipeDetail } from '@/features/recipes/model/types';
 import { getRecipeDetail } from '@/features/recipes/api/getRecipeDetail';
 import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
+import { parseIngredients } from '@/features/recipes/lib/parseIngredients';
 
 type Props = {
   params: Promise<{
@@ -28,13 +29,6 @@ const INGREDIENT_ITEM_STYLE =
 
 const STEP_ITEM_STYLE =
   'flex items-start gap-3 rounded-2xl bg-[var(--mm-inner-card-soft)] px-4 py-4';
-
-const parseIngredients = (ingredients: string) => {
-  return ingredients
-    .split(/\r?\n|,/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-};
 
 const RecipePage = async ({ params }: Props) => {
   const { id } = await params;
