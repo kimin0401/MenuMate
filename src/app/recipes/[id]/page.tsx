@@ -15,7 +15,7 @@ const PAGE_STYLE = 'mx-auto max-w-3xl px-4 py-8 md:py-10';
 const ARTICLE_STYLE = 'flex flex-col gap-8';
 
 const HERO_IMAGE_WRAPPER_STYLE =
-  'relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-[var(--mm-border)] bg-[var(--mm-surface)] shadow-sm';
+  'relative aspect-[16/10] w-full overflow-hidden rounded-3xl border border-[var(--mm-border)] bg-[var(--mm-surface)]';
 
 const SECTION_STYLE =
   'rounded-3xl border border-[var(--mm-border)] bg-[var(--mm-surface)] p-5 shadow-sm md:p-6';
@@ -50,7 +50,7 @@ const RecipePage = async ({ params }: Props) => {
   return (
     <main className={PAGE_STYLE}>
       <article className={ARTICLE_STYLE}>
-        <header className="flex flex-col gap-5">
+        <header className="flex flex-col gap-3">
           <div className={HERO_IMAGE_WRAPPER_STYLE}>
             <ImageWithFallback
               key={`${recipe.id}-${recipe.imageUrl}`}
@@ -61,7 +61,7 @@ const RecipePage = async ({ params }: Props) => {
             />
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             <span className="w-fit rounded-full bg-[var(--mm-primary-soft)] px-3 py-1 text-xs font-semibold text-[var(--mm-primary-hover)]">
               Recipe
             </span>
@@ -110,7 +110,7 @@ const RecipePage = async ({ params }: Props) => {
                     {index + 1}
                   </div>
 
-                  <p className="pt-1 text-sm leading-7 text-[var(--mm-text)]">{step}</p>
+                  <p className="text-sm leading-7 text-[var(--mm-text)]">{step}</p>
                 </li>
               ))}
             </ol>
