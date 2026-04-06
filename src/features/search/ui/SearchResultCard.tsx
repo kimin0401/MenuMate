@@ -1,4 +1,4 @@
-// 검색 결과 UI 담당 컴포넌트 예정
+// 검색 결과 UI 담당 컴포넌트
 import Link from 'next/link';
 import { SearchResult } from '@/features/search/model/types';
 import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
