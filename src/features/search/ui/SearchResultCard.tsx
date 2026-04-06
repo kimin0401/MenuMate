@@ -38,7 +38,7 @@ export const SearchResultCard = ({ result }: Props) => {
           href={`/recipes/${result.id}`}
           className="text-sm font-medium text-blue-600 hover:underline"
         >
-          레시피 페이지 테스트 →
+          상세 레시피 페이지
         </Link>
       </div>
     </li>
