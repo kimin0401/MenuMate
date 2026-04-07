@@ -11,37 +11,19 @@ export const SearchSection = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const q = searchParams.get('q')?.trim() ?? '';
+  const hasQuery = Boolean(q);
 
   // inputValue: 검색창에 입력 중인 draft 값
   const [inputValue, setInputValue] = useState('');
-
-  // submittedKeyword: 현재는 실제 검색에 적용된 값
-  // 추후에는 URL의 q 파라미터가 이 역할을 대체할 예정
-  const [submittedKeyword, setSubmittedKeyword] = useState('');
 
   // results / isLoading / error: 검색 기준 상태로부터 파생되는 값
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // hasSearched: 현재는 검색 전/후 화면 분기용 상태
-  // 추후에는 q 존재 여부로 대체할 예정
-  const [hasSearched, setHasSearched] = useState(false);
-
-  // URL에 q가 있으면 검색창 값과 현재 검색 상태를 동기화
+  // URL에 q가 있으면 검색창에도 반영
   useEffect(() => {
     setInputValue(q);
-
-    if (!q) {
-      setSubmittedKeyword('');
-      setHasSearched(false);
-      setResults([]);
-      setError(null);
-      return;
-    }
-
-    setSubmittedKeyword(q);
-    setHasSearched(true);
   }, [q]);
 
   const handleSubmit = () => {
@@ -58,7 +40,9 @@ export const SearchSection = () => {
   };
 
   useEffect(() => {
-    if (!submittedKeyword) {
+    if (!q) {
+      setResults([]);
+      setError(null);
       return;
     }
 
@@ -67,7 +51,7 @@ export const SearchSection = () => {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch(`/api/search?keyword=${encodeURIComponent(submittedKeyword)}`);
+        const response = await fetch(`/api/search?keyword=${encodeURIComponent(q)}`);
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => null);
@@ -86,7 +70,7 @@ export const SearchSection = () => {
     };
 
     fetchSearchResults();
-  }, [submittedKeyword]);
+  }, [q]);
 
   return (
     <div>
@@ -97,12 +81,7 @@ export const SearchSection = () => {
         placeholder="검색어를 입력하세요"
         disabled={isLoading}
       />
-      <SearchResults
-        results={results}
-        isLoading={isLoading}
-        error={error}
-        hasSearched={hasSearched}
-      />
+      <SearchResults results={results} isLoading={isLoading} error={error} hasQuery={hasQuery} />
     </div>
   );
 };
