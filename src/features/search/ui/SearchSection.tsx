@@ -10,7 +10,7 @@ import { SearchResults } from '@/features/search/ui/SearchResults';
 export const SearchSection = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const q = searchParams.get('q');
+  const q = searchParams.get('q')?.trim() ?? '';
 
   // inputValue: 검색창에 입력 중인 draft 값
   const [inputValue, setInputValue] = useState('');
@@ -28,8 +28,22 @@ export const SearchSection = () => {
   // 추후에는 q 존재 여부로 대체할 예정
   const [hasSearched, setHasSearched] = useState(false);
 
-  // 검색 제출 시 inputValue를 실제 검색 조건으로 확정한다.
-  // 이후에는 submittedKeyword 대신 /?q=... 형태로 URL을 갱신하도록 변경 예정
+  // URL에 q가 있으면 검색창 값과 현재 검색 상태를 동기화
+  useEffect(() => {
+    setInputValue(q);
+
+    if (!q) {
+      setSubmittedKeyword('');
+      setHasSearched(false);
+      setResults([]);
+      setError(null);
+      return;
+    }
+
+    setSubmittedKeyword(q);
+    setHasSearched(true);
+  }, [q]);
+
   const handleSubmit = () => {
     const trimmedValue = inputValue.trim();
 
@@ -37,10 +51,10 @@ export const SearchSection = () => {
       return;
     }
 
-    // 현재는 submittedKeyword를 기준으로 검색을 실행하고 있지만,
-    // 추후에는 /?q=... 형태로 URL을 갱신하도록 변경 예정
-    setSubmittedKeyword(trimmedValue);
-    setHasSearched(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('q', trimmedValue);
+
+    router.push(`/?${params.toString()}`);
   };
 
   useEffect(() => {
