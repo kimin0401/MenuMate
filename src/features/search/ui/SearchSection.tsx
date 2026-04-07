@@ -2,18 +2,34 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchBar } from '@/shared/ui/SearchBar';
 import type { SearchApiResponse, SearchResult } from '@/features/search/model/types';
 import { SearchResults } from '@/features/search/ui/SearchResults';
 
 export const SearchSection = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const q = searchParams.get('q');
+
+  // inputValue: 검색창에 입력 중인 draft 값
   const [inputValue, setInputValue] = useState('');
+
+  // submittedKeyword: 현재는 실제 검색에 적용된 값
+  // 추후에는 URL의 q 파라미터가 이 역할을 대체할 예정
   const [submittedKeyword, setSubmittedKeyword] = useState('');
+
+  // results / isLoading / error: 검색 기준 상태로부터 파생되는 값
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // hasSearched: 현재는 검색 전/후 화면 분기용 상태
+  // 추후에는 q 존재 여부로 대체할 예정
   const [hasSearched, setHasSearched] = useState(false);
 
+  // 검색 제출 시 inputValue를 실제 검색 조건으로 확정한다.
+  // 이후에는 submittedKeyword 대신 /?q=... 형태로 URL을 갱신하도록 변경 예정
   const handleSubmit = () => {
     const trimmedValue = inputValue.trim();
 
@@ -21,6 +37,8 @@ export const SearchSection = () => {
       return;
     }
 
+    // 현재는 submittedKeyword를 기준으로 검색을 실행하고 있지만,
+    // 추후에는 /?q=... 형태로 URL을 갱신하도록 변경 예정
     setSubmittedKeyword(trimmedValue);
     setHasSearched(true);
   };
