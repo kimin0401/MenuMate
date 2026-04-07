@@ -21,56 +21,143 @@ export const SearchSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  console.log('[render]', {
+    q,
+    hasQuery,
+    inputValue,
+    isLoading,
+    resultsLength: results.length,
+    error,
+  });
+
   // URL에 q가 있으면 검색창에도 반영
   useEffect(() => {
+    console.log('[sync inputValue from q]', {
+      q,
+      previousInputValue: inputValue,
+    });
+
     setInputValue(q);
   }, [q]);
 
   const handleSubmit = () => {
     const trimmedValue = inputValue.trim();
 
+    console.log('[handleSubmit]', {
+      inputValue,
+      trimmedValue,
+      currentQ: q,
+    });
+
     if (!trimmedValue) {
+      console.log('[handleSubmit] empty trimmedValue -> return');
       return;
     }
 
     const params = new URLSearchParams(searchParams.toString());
     params.set('q', trimmedValue);
 
-    router.push(`/?${params.toString()}`);
+    const nextUrl = `/?${params.toString()}`;
+
+    console.log('[router.push]', {
+      nextUrl,
+      previousUrlQuery: searchParams.toString(),
+    });
+
+    router.push(nextUrl);
   };
 
   useEffect(() => {
+    console.log('[search effect] q changed:', q);
+
     if (!q) {
+      console.log('[search effect] q is empty -> reset results/error');
       setResults([]);
       setError(null);
       return;
     }
 
     const fetchSearchResults = async () => {
+      console.log('[fetch start]', {
+        q,
+        currentResultsLength: results.length,
+      });
+
       try {
         setIsLoading(true);
         setError(null);
 
         const response = await fetch(`/api/search?keyword=${encodeURIComponent(q)}`);
 
+        console.log('[fetch response]', {
+          q,
+          ok: response.ok,
+          status: response.status,
+        });
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => null);
+
+          console.log('[fetch response error body]', {
+            q,
+            errorData,
+          });
+
           throw new Error(errorData?.message || '검색 요청 중 오류가 발생했습니다.');
         }
+
         const data: SearchApiResponse = await response.json();
+
+        console.log('[fetch success]', {
+          q,
+          resultsLength: data.results.length,
+        });
+
         setResults(data.results);
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+
+        console.log('[fetch error]', {
+          q,
+          error,
+          errorMessage,
+        });
+
         setError(errorMessage);
         setResults([]);
       } finally {
+        console.log('[fetch end]', {
+          q,
+        });
+
         setIsLoading(false);
       }
     };
 
     fetchSearchResults();
   }, [q]);
+
+  useEffect(() => {
+    console.log('[results changed]', {
+      q,
+      resultsLength: results.length,
+    });
+  }, [results, q]);
+
+  useEffect(() => {
+    console.log('[loading changed]', {
+      q,
+      isLoading,
+    });
+  }, [isLoading, q]);
+
+  useEffect(() => {
+    console.log('[error changed]', {
+      q,
+      error,
+    });
+  }, [error, q]);
 
   return (
     <div>
