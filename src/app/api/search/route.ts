@@ -11,7 +11,6 @@ export const GET = async (request: Request) => {
   console.log('[api/search] incoming keyword:', keyword);
 
   if (!keyword) {
-    console.log('[api/search] empty keyword -> 400');
     return NextResponse.json({ message: '검색어를 입력해주세요.' }, { status: 400 });
   }
 
@@ -29,7 +28,7 @@ export const GET = async (request: Request) => {
 
     return NextResponse.json(response, { status: 200 });
   } catch (error) {
-    console.error('[api/search] failed', {
+    console.error('[api/search] error', {
       keyword,
       error,
     });

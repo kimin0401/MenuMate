@@ -25,18 +25,65 @@ export const searchFoodApiRecipes = async (keyword: string): Promise<FoodApiReci
     `${FOOD_API_BASE_URL}/${apiKey}/${FOOD_API_SERVICE_ID}/${FOOD_API_DATA_TYPE}` +
     `/${DEFAULT_START_INDEX}/${DEFAULT_END_INDEX}/RCP_NM=${encodeURIComponent(trimmedKeyword)}`;
 
+  console.log('[food api] request start', {
+    keyword: trimmedKeyword,
+    requestUrl,
+  });
+
   const response = await fetch(requestUrl, {
     method: 'GET',
     cache: 'no-store',
   });
 
+  const contentType = response.headers.get('content-type') ?? '';
+
+  console.log('[food api] response meta', {
+    keyword: trimmedKeyword,
+    status: response.status,
+    statusText: response.statusText,
+    ok: response.ok,
+    contentType,
+  });
+
+  const rawText = await response.text();
+
+  console.log('[food api] response preview', {
+    keyword: trimmedKeyword,
+    preview: rawText.slice(0, 200),
+  });
+
   if (!response.ok) {
-    throw new Error('식약처 API 요청에 실패했습니다.');
+    throw new Error(
+      `식약처 API 요청에 실패했습니다. status=${response.status}, statusText=${response.statusText}`,
+    );
   }
 
-  const data: FoodApiResponseRaw = await response.json();
+  if (!contentType.includes('application/json')) {
+    throw new Error(`식약처 API가 JSON이 아닌 응답을 반환했습니다. content-type=${contentType}`);
+  }
+
+  let data: FoodApiResponseRaw;
+
+  try {
+    data = JSON.parse(rawText) as FoodApiResponseRaw;
+  } catch (error) {
+    console.error('[food api] JSON parse error', {
+      keyword: trimmedKeyword,
+      error,
+      preview: rawText.slice(0, 200),
+    });
+
+    throw new Error('식약처 API 응답을 JSON으로 파싱하는 데 실패했습니다.');
+  }
 
   const resultCode = data.COOKRCP01?.RESULT?.CODE;
+
+  console.log('[food api] parsed result', {
+    keyword: trimmedKeyword,
+    resultCode,
+    resultMessage: data.COOKRCP01?.RESULT?.MSG,
+    rowLength: data.COOKRCP01?.row?.length ?? 0,
+  });
 
   if (resultCode && resultCode !== 'INFO-000' && resultCode !== 'INFO-200') {
     const resultMessage =
