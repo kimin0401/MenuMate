@@ -4,7 +4,6 @@ export type SearchResult = {
   name: string;
   summary: string;
   imageUrl: string;
-  tags: string[];
 };
 
 export type SearchApiResponse = {
