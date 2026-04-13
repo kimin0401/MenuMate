@@ -1,4 +1,4 @@
-// 검색 결과 UI 담당 컴포넌트 예정
+// 검색 결과 UI 담당 컴포넌트
 import Link from 'next/link';
 import { SearchResult } from '@/features/search/model/types';
 import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
@@ -38,7 +38,7 @@ export const SearchResultCard = ({ result }: Props) => {
           href={`/recipes/${result.id}`}
           className="text-sm font-medium text-blue-600 hover:underline"
         >
-          레시피 페이지 테스트 →
+          상세 레시피 페이지
         </Link>
       </div>
     </li>

@@ -1,3 +1,4 @@
+//TODO: 로딩 스피너 추가 고려
 import type { SearchResult } from '@/features/search/model/types';
 import { SearchResultCard } from '@/features/search/ui/SearchResultCard';
 
@@ -5,10 +6,10 @@ type SearchResultsProps = {
   results: SearchResult[];
   isLoading: boolean;
   error: string | null;
-  hasSearched: boolean;
+  hasQuery: boolean;
 };
 
-export const SearchResults = ({ results, isLoading, error, hasSearched }: SearchResultsProps) => {
+export const SearchResults = ({ results, isLoading, error, hasQuery }: SearchResultsProps) => {
   if (isLoading) {
     return <p>검색 중입니다...</p>;
   }
@@ -17,7 +18,7 @@ export const SearchResults = ({ results, isLoading, error, hasSearched }: Search
     return <p>{error}</p>;
   }
 
-  if (!hasSearched) {
+  if (!hasQuery) {
     return null;
   }
 

@@ -12,10 +12,25 @@ export const GET = async (request: Request) => {
     return NextResponse.json({ message: '검색어를 입력해주세요.' }, { status: 400 });
   }
 
-  const results = await searchRecipes(keyword);
-  const response: SearchApiResponse = {
-    results,
-  };
+  try {
+    const results = await searchRecipes(keyword);
 
-  return NextResponse.json(response, { status: 200 });
+    const response: SearchApiResponse = {
+      results,
+    };
+
+    return NextResponse.json(response, { status: 200 });
+  } catch (error) {
+    console.error('[api/search] error', {
+      keyword,
+      error,
+    });
+
+    return NextResponse.json(
+      {
+        message: '검색 요청 중 오류가 발생했습니다.',
+      },
+      { status: 500 },
+    );
+  }
 };

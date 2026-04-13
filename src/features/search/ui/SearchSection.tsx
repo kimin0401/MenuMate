@@ -2,59 +2,96 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { SearchBar } from '@/shared/ui/SearchBar';
 import type { SearchApiResponse, SearchResult } from '@/features/search/model/types';
 import { SearchResults } from '@/features/search/ui/SearchResults';
 
+const SEARCH_DEBOUNCE_MS = 300;
+
 export const SearchSection = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const q = searchParams.get('q')?.trim() ?? '';
+  const hasQuery = Boolean(q);
+
+  // inputValue: 검색창에 입력 중인 draft 값
   const [inputValue, setInputValue] = useState('');
-  const [submittedKeyword, setSubmittedKeyword] = useState('');
+
+  // results / isLoading / error: 검색 기준 상태로부터 파생되는 값
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+
+  useEffect(() => {
+    console.log('[sync inputValue from q]', {
+      q,
+      previousInputValue: inputValue,
+    });
+
+    setInputValue(q);
+  }, [q]);
 
   const handleSubmit = () => {
     const trimmedValue = inputValue.trim();
 
     if (!trimmedValue) {
+      console.log('[handleSubmit] empty trimmedValue -> return');
       return;
     }
 
-    setSubmittedKeyword(trimmedValue);
-    setHasSearched(true);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('q', trimmedValue);
+
+    const nextUrl = `/?${params.toString()}`;
+
+    router.push(nextUrl);
   };
 
   useEffect(() => {
-    if (!submittedKeyword) {
+    if (!q) {
+      console.log('[search effect] q is empty -> reset results/error');
+      setResults([]);
+      setError(null);
+      setIsLoading(false);
       return;
     }
 
-    const fetchSearchResults = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
+    const timerId = window.setTimeout(() => {
+      const fetchSearchResults = async () => {
+        try {
+          setIsLoading(true);
+          setError(null);
 
-        const response = await fetch(`/api/search?keyword=${encodeURIComponent(submittedKeyword)}`);
+          const response = await fetch(`/api/search?keyword=${encodeURIComponent(q)}`);
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
-          throw new Error(errorData?.message || '검색 요청 중 오류가 발생했습니다.');
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+
+            throw new Error(errorData?.message || '검색 요청 중 오류가 발생했습니다.');
+          }
+
+          const data: SearchApiResponse = await response.json();
+
+          setResults(data.results);
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+
+          setError(errorMessage);
+          setResults([]);
+        } finally {
+          setIsLoading(false);
         }
-        const data: SearchApiResponse = await response.json();
-        setResults(data.results);
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
-        setError(errorMessage);
-        setResults([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      };
 
-    fetchSearchResults();
-  }, [submittedKeyword]);
+      fetchSearchResults();
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, [q]);
 
   return (
     <div>
@@ -65,12 +102,7 @@ export const SearchSection = () => {
         placeholder="검색어를 입력하세요"
         disabled={isLoading}
       />
-      <SearchResults
-        results={results}
-        isLoading={isLoading}
-        error={error}
-        hasSearched={hasSearched}
-      />
+      <SearchResults results={results} isLoading={isLoading} error={error} hasQuery={hasQuery} />
     </div>
   );
 };
