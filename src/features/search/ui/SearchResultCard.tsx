@@ -19,7 +19,6 @@ export const SearchResultCard = ({ result }: Props) => {
           className="object-cover"
         />
       </div>
-
       <div className="flex flex-col gap-3 p-4">
         <div className="flex flex-col gap-1">
           <h3 className="text-base font-semibold text-gray-900">{result.name}</h3>
