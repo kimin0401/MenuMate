@@ -1,6 +1,6 @@
 // 검색 결과 UI 담당 컴포넌트
 import Link from 'next/link';
-import { SearchResult } from '@/features/search/model/types';
+import type { SearchResult } from '@/features/search/model/types';
 import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
 
 type Props = {
@@ -19,21 +19,11 @@ export const SearchResultCard = ({ result }: Props) => {
           className="object-cover"
         />
       </div>
-
       <div className="flex flex-col gap-3 p-4">
         <div className="flex flex-col gap-1">
           <h3 className="text-base font-semibold text-gray-900">{result.name}</h3>
           <p className="text-sm text-gray-500">{result.summary}</p>
         </div>
-
-        <div className="flex flex-wrap gap-2">
-          {result.tags.map((tag) => (
-            <span key={tag} className="rounded-full bg-gray-100 px-2 py-1 text-xs text-gray-600">
-              {tag}
-            </span>
-          ))}
-        </div>
-        {/* 테스트용 상세 페이지 링크 */}
         <Link
           href={`/recipes/${result.id}`}
           className="text-sm font-medium text-blue-600 hover:underline"
