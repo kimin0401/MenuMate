@@ -7,6 +7,8 @@ import { SearchBar } from '@/shared/ui/SearchBar';
 import type { SearchApiResponse, SearchResult } from '@/features/search/model/types';
 import { SearchResults } from '@/features/search/ui/SearchResults';
 
+const SEARCH_DEBOUNCE_MS = 300;
+
 export const SearchSection = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,16 +23,6 @@ export const SearchSection = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('[render]', {
-    q,
-    hasQuery,
-    inputValue,
-    isLoading,
-    resultsLength: results.length,
-    error,
-  });
-
-  // URL에 q가 있으면 검색창에도 반영
   useEffect(() => {
     console.log('[sync inputValue from q]', {
       q,
@@ -43,12 +35,6 @@ export const SearchSection = () => {
   const handleSubmit = () => {
     const trimmedValue = inputValue.trim();
 
-    console.log('[handleSubmit]', {
-      inputValue,
-      trimmedValue,
-      currentQ: q,
-    });
-
     if (!trimmedValue) {
       console.log('[handleSubmit] empty trimmedValue -> return');
       return;
@@ -59,105 +45,53 @@ export const SearchSection = () => {
 
     const nextUrl = `/?${params.toString()}`;
 
-    console.log('[router.push]', {
-      nextUrl,
-      previousUrlQuery: searchParams.toString(),
-    });
-
     router.push(nextUrl);
   };
 
   useEffect(() => {
-    console.log('[search effect] q changed:', q);
-
     if (!q) {
       console.log('[search effect] q is empty -> reset results/error');
       setResults([]);
       setError(null);
+      setIsLoading(false);
       return;
     }
 
-    const fetchSearchResults = async () => {
-      console.log('[fetch start]', {
-        q,
-        currentResultsLength: results.length,
-      });
+    const timerId = window.setTimeout(() => {
+      const fetchSearchResults = async () => {
+        try {
+          setIsLoading(true);
+          setError(null);
 
-      try {
-        setIsLoading(true);
-        setError(null);
+          const response = await fetch(`/api/search?keyword=${encodeURIComponent(q)}`);
 
-        const response = await fetch(`/api/search?keyword=${encodeURIComponent(q)}`);
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
 
-        console.log('[fetch response]', {
-          q,
-          ok: response.ok,
-          status: response.status,
-        });
+            throw new Error(errorData?.message || '검색 요청 중 오류가 발생했습니다.');
+          }
 
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => null);
+          const data: SearchApiResponse = await response.json();
 
-          console.log('[fetch response error body]', {
-            q,
-            errorData,
-          });
+          setResults(data.results);
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
 
-          throw new Error(errorData?.message || '검색 요청 중 오류가 발생했습니다.');
+          setError(errorMessage);
+          setResults([]);
+        } finally {
+          setIsLoading(false);
         }
+      };
 
-        const data: SearchApiResponse = await response.json();
+      fetchSearchResults();
+    }, SEARCH_DEBOUNCE_MS);
 
-        console.log('[fetch success]', {
-          q,
-          resultsLength: data.results.length,
-        });
-
-        setResults(data.results);
-      } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
-
-        console.log('[fetch error]', {
-          q,
-          error,
-          errorMessage,
-        });
-
-        setError(errorMessage);
-        setResults([]);
-      } finally {
-        console.log('[fetch end]', {
-          q,
-        });
-
-        setIsLoading(false);
-      }
+    return () => {
+      window.clearTimeout(timerId);
     };
-
-    fetchSearchResults();
   }, [q]);
-
-  useEffect(() => {
-    console.log('[results changed]', {
-      q,
-      resultsLength: results.length,
-    });
-  }, [results, q]);
-
-  useEffect(() => {
-    console.log('[loading changed]', {
-      q,
-      isLoading,
-    });
-  }, [isLoading, q]);
-
-  useEffect(() => {
-    console.log('[error changed]', {
-      q,
-      error,
-    });
-  }, [error, q]);
 
   return (
     <div>

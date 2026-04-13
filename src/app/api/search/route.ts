@@ -8,19 +8,12 @@ export const GET = async (request: Request) => {
   const { searchParams } = new URL(request.url);
   const keyword = searchParams.get('keyword')?.trim();
 
-  console.log('[api/search] incoming keyword:', keyword);
-
   if (!keyword) {
     return NextResponse.json({ message: '검색어를 입력해주세요.' }, { status: 400 });
   }
 
   try {
     const results = await searchRecipes(keyword);
-
-    console.log('[api/search] success', {
-      keyword,
-      resultsLength: results.length,
-    });
 
     const response: SearchApiResponse = {
       results,
