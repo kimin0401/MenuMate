@@ -3,95 +3,50 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { SearchBar } from '@/shared/ui/SearchBar';
-import type { SearchApiResponse, SearchResult } from '@/features/search/model/types';
-import { SearchResults } from '@/features/search/ui/SearchResults';
+import { useQuery } from '@tanstack/react-query';
 
-const SEARCH_DEBOUNCE_MS = 300;
+import { SearchBar } from '@/shared/ui/SearchBar';
+import { SearchResults } from '@/features/search/ui/SearchResults';
+import { fetchSearch } from '@/features/search/api/fetchSearch';
 
 export const SearchSection = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const q = searchParams.get('q')?.trim() ?? '';
   const hasQuery = Boolean(q);
 
-  // inputValue: 검색창에 입력 중인 draft 값
+  // 입력창 상태 (draft)
   const [inputValue, setInputValue] = useState('');
 
-  // results / isLoading / error: 검색 기준 상태로부터 파생되는 값
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
+  // URL → input 동기화
   useEffect(() => {
-    console.log('[sync inputValue from q]', {
-      q,
-      previousInputValue: inputValue,
-    });
-
     setInputValue(q);
   }, [q]);
+
+  const {
+    data: queryResults = [],
+    isLoading: queryLoading,
+    isFetching: queryFetching,
+    error: queryError,
+  } = useQuery({
+    queryKey: ['recipes', q],
+    queryFn: () => fetchSearch(q),
+    enabled: !!q,
+  });
 
   const handleSubmit = () => {
     const trimmedValue = inputValue.trim();
 
     if (!trimmedValue) {
-      console.log('[handleSubmit] empty trimmedValue -> return');
       return;
     }
 
     const params = new URLSearchParams(searchParams.toString());
     params.set('q', trimmedValue);
 
-    const nextUrl = `/?${params.toString()}`;
-
-    router.push(nextUrl);
+    router.push(`/?${params.toString()}`);
   };
-
-  useEffect(() => {
-    if (!q) {
-      console.log('[search effect] q is empty -> reset results/error');
-      setResults([]);
-      setError(null);
-      setIsLoading(false);
-      return;
-    }
-
-    const timerId = window.setTimeout(() => {
-      const fetchSearchResults = async () => {
-        try {
-          setIsLoading(true);
-          setError(null);
-
-          const response = await fetch(`/api/search?keyword=${encodeURIComponent(q)}`);
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-
-            throw new Error(errorData?.message || '검색 요청 중 오류가 발생했습니다.');
-          }
-
-          const data: SearchApiResponse = await response.json();
-
-          setResults(data.results);
-        } catch (error) {
-          const errorMessage =
-            error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
-
-          setError(errorMessage);
-          setResults([]);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchSearchResults();
-    }, SEARCH_DEBOUNCE_MS);
-
-    return () => {
-      window.clearTimeout(timerId);
-    };
-  }, [q]);
 
   return (
     <div>
@@ -100,9 +55,15 @@ export const SearchSection = () => {
         onChange={setInputValue}
         onSubmit={handleSubmit}
         placeholder="검색어를 입력하세요"
-        disabled={isLoading}
+        disabled={queryLoading}
       />
-      <SearchResults results={results} isLoading={isLoading} error={error} hasQuery={hasQuery} />
+      <SearchResults
+        results={queryResults}
+        isLoading={queryLoading}
+        isFetching={queryFetching}
+        error={queryError instanceof Error ? queryError.message : null}
+        hasQuery={hasQuery}
+      />
     </div>
   );
 };
