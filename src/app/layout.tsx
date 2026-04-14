@@ -1,24 +1,21 @@
 import type { Metadata } from 'next';
-import { pretendard } from '@/styles/fonts/fonts';
 import '@/styles/globals.css';
-import { cn } from '@/shared/lib/cn';
+import { Providers } from '@/app/providers';
 
 export const metadata: Metadata = {
   title: 'MenuMate',
-  description: '재료/메뉴명으로 레시피를 검색하는 메뉴 추천 도우미',
+  description: '메뉴 레시피 조회 사이트',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+type Props = {
   children: React.ReactNode;
-}>) {
+};
+
+export default function RootLayout({ children }: Props) {
   return (
     <html lang="ko">
-      <body
-        className={cn(pretendard.variable, 'bg-[var(--mm-bg)] text-[var(--mm-text)] antialiased')}
-      >
-        {children}
+      <body>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
