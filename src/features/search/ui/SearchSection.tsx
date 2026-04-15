@@ -9,6 +9,7 @@ import { useIsRestoring } from '@tanstack/react-query';
 import { SearchBar } from '@/shared/ui/SearchBar';
 import { SearchResults } from '@/features/search/ui/SearchResults';
 import { fetchSearch } from '@/features/search/api/fetchSearch';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 
 export const SearchSection = () => {
   const router = useRouter();
@@ -51,7 +52,7 @@ export const SearchSection = () => {
   };
 
   if (isRestoring) {
-    return <p>검색 중...</p>;
+    return <LoadingSpinner size="lg" label="검색 결과를 불러오는 중..." className="py-20" />;
   }
 
   return (
