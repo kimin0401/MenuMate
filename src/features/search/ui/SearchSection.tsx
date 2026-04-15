@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
-// import { useIsRestoring } from '@tanstack/react-query';
+import { useIsRestoring } from '@tanstack/react-query';
 
 import { SearchBar } from '@/shared/ui/SearchBar';
 import { SearchResults } from '@/features/search/ui/SearchResults';
@@ -13,7 +13,7 @@ import { fetchSearch } from '@/features/search/api/fetchSearch';
 export const SearchSection = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  // const isRestoring = useIsRestoring();
+  const isRestoring = useIsRestoring();
 
   const q = searchParams.get('q')?.trim() ?? '';
   const hasQuery = Boolean(q);
@@ -34,8 +34,7 @@ export const SearchSection = () => {
   } = useQuery({
     queryKey: ['recipes', q],
     queryFn: () => fetchSearch(q),
-    enabled: !!q,
-    // && !isRestoring,
+    enabled: !!q && !isRestoring,
   });
 
   const handleSubmit = () => {
@@ -51,9 +50,9 @@ export const SearchSection = () => {
     router.push(`/?${params.toString()}`);
   };
 
-  // if (isRestoring) {
-  //   return <p>검색 중...</p>;
-  // }
+  if (isRestoring) {
+    return <p>검색 중...</p>;
+  }
 
   return (
     <div>
