@@ -7,11 +7,7 @@ export const metadata: Metadata = {
   description: '메뉴 레시피 조회 사이트',
 };
 
-type Props = {
-  children: React.ReactNode;
-};
-
-export default function RootLayout({ children }: Props) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
       <body>
