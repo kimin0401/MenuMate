@@ -1,6 +1,7 @@
 //TODO: 로딩 스피너 추가 고려
 import type { SearchResult } from '@/features/search/model/types';
 import { SearchResultCard } from '@/features/search/ui/SearchResultCard';
+import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';
 
 type SearchResultsProps = {
   results: SearchResult[];
@@ -23,7 +24,7 @@ export const SearchResults = ({
   }
   // 처음 검색(캐시 없음)
   if (results.length === 0 && isLoading) {
-    return <p>검색 중입니다...</p>;
+    return <LoadingSpinner size="md" label="검색 중..." className="py-10" />;
   }
   // 에러
   if (error) {
