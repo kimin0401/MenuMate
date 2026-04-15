@@ -16,7 +16,7 @@ export const Providers = ({ children }: Props) => {
         defaultOptions: {
           queries: {
             staleTime: 1000 * 60 * 5, // 기본적으로 5분 동안 캐시 유지
-            gcTime: 1000 * 60 * 15, // 15분 후에 가비지 컬렉션
+            gcTime: 1000 * 60 * 15, // 15분 후 가비지 컬렉션
             retry: 1, // 실패 시 1회 재시도
           },
         },
