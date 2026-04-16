@@ -1,4 +1,3 @@
-//TODO: 로딩 스피너 추가 고려
 import type { SearchResult } from '@/features/search/model/types';
 import { SearchResultCard } from '@/features/search/ui/SearchResultCard';
 import { LoadingSpinner } from '@/shared/ui/LoadingSpinner';

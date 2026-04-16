@@ -3,6 +3,7 @@ import type { RecipeDetail } from '@/features/recipes/model/types';
 import { getRecipeDetail } from '@/features/recipes/api/getRecipeDetail';
 import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
 import { parseIngredients } from '@/features/recipes/lib/parseIngredients';
+import { RecipePageHeader } from '@/features/recipes/ui/RecipePageHeader';
 
 type Props = {
   params: Promise<{
@@ -55,6 +56,7 @@ const RecipePage = async ({ params }: Props) => {
   return (
     <main className={PAGE_STYLE}>
       <article className={ARTICLE_STYLE}>
+        <RecipePageHeader />
         <header className="flex flex-col gap-3">
           <div className={HERO_IMAGE_WRAPPER_STYLE}>
             <ImageWithFallback
