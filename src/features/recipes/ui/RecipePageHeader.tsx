@@ -27,8 +27,7 @@ export const RecipePageHeader = () => {
         className={BACK_BUTTON_STYLE}
         aria-label="뒤로가기"
       >
-        <ChevronLeft className="h-4 w-4" />
-        뒤로가기
+        <ChevronLeft className="h-4 w-4 text-[var(--mm-primary)]" />
       </button>
 
       <Link href="/" aria-label="메인 페이지로 이동" className="shrink-0">
