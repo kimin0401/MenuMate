@@ -35,7 +35,7 @@ export const SearchResults = ({
   }
 
   return (
-    <div>
+    <div className="mt-6">
       {isFetching && <p className="mb-2 text-sm text-gray-400">업데이트 중...</p>}
       <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {results.map((result) => (
