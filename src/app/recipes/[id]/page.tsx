@@ -9,11 +9,14 @@ type Props = {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{
+    name?: string;
+  }>;
 };
 
 const PAGE_STYLE = 'mx-auto max-w-3xl px-4 py-8 md:py-10';
 
-const ARTICLE_STYLE = 'flex flex-col gap-8';
+const ARTICLE_STYLE = 'flex flex-col gap-8 mt-6';
 
 const HERO_IMAGE_WRAPPER_STYLE =
   'relative aspect-[16/10] w-full overflow-hidden rounded-3xl border mx-auto border-[var(--mm-border)] bg-[var(--mm-surface)] md:max-w-[560px]';
@@ -36,17 +39,23 @@ const STEP_LABEL_STYLE =
 const STEP_IMAGE_WRAPPER_STYLE =
   'relative aspect-[16/10] w-full max-w-[240px] sm:max-w-[260px] md:max-w-[300px] mx-auto overflow-hidden rounded-2xl border border-[var(--mm-border)] bg-[var(--mm-surface)]';
 
-const RecipePage = async ({ params }: Props) => {
+const RecipePage = async ({ params, searchParams }: Props) => {
   const { id } = await params;
+  const { name } = await searchParams;
 
   let recipe: RecipeDetail;
 
   try {
-    recipe = await getRecipeDetail(id);
+    if (!name) {
+      throw new Error('RECIPE_NAME_MISSING');
+    }
+
+    recipe = await getRecipeDetail(id, name);
   } catch (error) {
     return (
       <main className={PAGE_STYLE}>
-        <p className="text-sm text-red-500">레시피를 불러오지 못했습니다.</p>
+        <RecipePageHeader />
+        <p className="mt-6 text-sm text-red-500">레시피를 불러오지 못했습니다.</p>
       </main>
     );
   }
@@ -55,8 +64,8 @@ const RecipePage = async ({ params }: Props) => {
 
   return (
     <main className={PAGE_STYLE}>
+      <RecipePageHeader />
       <article className={ARTICLE_STYLE}>
-        <RecipePageHeader />
         <header className="flex flex-col gap-3">
           <div className={HERO_IMAGE_WRAPPER_STYLE}>
             <ImageWithFallback

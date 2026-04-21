@@ -25,7 +25,7 @@ export const SearchResultCard = ({ result }: Props) => {
           <p className="text-sm text-gray-500">{result.summary}</p>
         </div>
         <Link
-          href={`/recipes/${result.id}`}
+          href={`/recipes/${result.id}?name=${encodeURIComponent(result.name)}`}
           className="text-sm font-medium text-blue-600 hover:underline"
         >
           상세 레시피 페이지

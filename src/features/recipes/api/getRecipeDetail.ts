@@ -1,5 +1,4 @@
-// 레시피 상세 조회의 핵심 서버 로직 담당
-//TODO: 현재 1~1000 범위만 조회한 뒤 RCP_SEQ로 찾고 있어 1000을 넘는 id는 조회되지 않는 문제 존재
+// 레시피 상세 조회의 핵심 서버 로직 담당 RCP_NM으로 조회 후 RCP_SEQ로 보정하는 구조
 import 'server-only';
 
 import { normalizeRecipeDetail } from '@/features/recipes/lib/normalizeRecipeDetail';
@@ -18,9 +17,6 @@ type FoodApiResponse = {
   };
 };
 
-const RECIPE_DETAIL_START_INDEX = 1;
-const RECIPE_DETAIL_END_INDEX = 1000;
-
 const getRecipeRows = (data: FoodApiResponse): RecipeDetailRaw[] => {
   return data.COOKRCP01?.row ?? [];
 };
@@ -37,11 +33,15 @@ const findRecipeById = (rows: RecipeDetailRaw[], recipeId: string): RecipeDetail
   return rows.find((recipe) => recipe.RCP_SEQ?.trim() === recipeId);
 };
 
-export const getRecipeDetail = async (recipeId: string): Promise<RecipeDetail> => {
-  const trimmedRecipeId = recipeId.trim();
+export const getRecipeDetail = async (
+  recipeId: string,
+  recipeName: string,
+): Promise<RecipeDetail> => {
+  const trimmedId = recipeId.trim();
+  const trimmedName = recipeName.trim();
 
-  if (!trimmedRecipeId) {
-    throw new Error('INVALID_RECIPE_ID');
+  if (!trimmedId || !trimmedName) {
+    throw new Error('INVALID_RECIPE_PARAMS');
   }
 
   const apiKey = process.env.FOOD_API_KEY;
@@ -50,11 +50,13 @@ export const getRecipeDetail = async (recipeId: string): Promise<RecipeDetail> =
     throw new Error('FOOD_API_KEY 환경변수가 설정되지 않았습니다.');
   }
 
+  // 이름 기반 조회
+  const encodedName = encodeURIComponent(trimmedName.replace(/\s+/g, ''));
+
   const requestUrl =
     `${FOOD_API_BASE_URL}/${apiKey}/${FOOD_API_SERVICE_ID}/${FOOD_API_DATA_TYPE}` +
-    `/${RECIPE_DETAIL_START_INDEX}/${RECIPE_DETAIL_END_INDEX}`;
+    `/1/10/RCP_NM=${encodedName}`;
 
-  console.log(requestUrl);
   const response = await fetch(requestUrl, {
     method: 'GET',
     cache: 'no-store',
@@ -65,6 +67,7 @@ export const getRecipeDetail = async (recipeId: string): Promise<RecipeDetail> =
   }
 
   const data: FoodApiResponse = await response.json();
+
   const resultCode = getFoodApiResultCode(data);
 
   if (resultCode && resultCode !== 'INFO-000' && resultCode !== 'INFO-200') {
@@ -72,11 +75,12 @@ export const getRecipeDetail = async (recipeId: string): Promise<RecipeDetail> =
   }
 
   const rows = getRecipeRows(data);
-  const targetRecipe = findRecipeById(rows, trimmedRecipeId);
 
-  if (!targetRecipe) {
+  if (!rows.length) {
     throw new Error('RECIPE_NOT_FOUND');
   }
+
+  const targetRecipe = findRecipeById(rows, trimmedId) ?? rows[0];
 
   return normalizeRecipeDetail(targetRecipe);
 };
