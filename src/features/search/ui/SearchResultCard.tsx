@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import type { SearchResult } from '@/features/search/model/types';
 import { ImageWithFallback } from '@/shared/ui/ImageWithFallback';
+import { getRecipeDetailHref } from '@/features/recipes/lib/getRecipeDetailHref';
 
 type Props = {
   result: SearchResult;
@@ -25,7 +26,7 @@ export const SearchResultCard = ({ result }: Props) => {
           <p className="text-sm text-gray-500">{result.summary}</p>
         </div>
         <Link
-          href={`/recipes/${result.id}?name=${encodeURIComponent(result.name)}`}
+          href={getRecipeDetailHref(result.id, result.name)}
           className="text-sm font-medium text-blue-600 hover:underline"
         >
           상세 레시피 페이지
