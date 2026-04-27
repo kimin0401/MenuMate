@@ -20,7 +20,7 @@ MenuMate는 일상 속 메뉴를 결정하는 상황에서 사용자가 쉽게 �
 
 ## 2. 배포 링크
 
-배포링크 - https://menu-mate.vercel.app
+배포링크 - https://menu-mate-puce.vercel.app
 
 ## 3. 프로젝트 기간 및 진행 방식
 
