@@ -3,7 +3,8 @@
 ## 1. 프로젝트 소개
 
 > 🔍 메뉴 탐색부터 레시피 확인까지, 끊김 없는 경험을 제공하는 서비스
-> 배포링크 - https://menu-mate-puce.vercel.app
+
+👉 배포링크 - https://menu-mate-puce.vercel.app
 
 MenuMate는 일상 속 메뉴를 결정하는 상황에서 사용자가 쉽게 음식 및 음식의 레시피를 탐색하고 선택할 수 있도록 돕는 웹 서비스입니다.
 
@@ -204,8 +205,9 @@ TanStack Query를 도입하여 서버 상태를 캐싱 기반으로 관리하도
 - 서버 상태 관리 구조 개선
 
 자세한 내용은 블로그 글에서 확인할 수 있습니다.
-검색 로직 리팩토링: https://dev-in96.tistory.com/83
-리팩토링 이후 Recoverable Error해결: https://dev-in96.tistory.com/84
+
+[검색 로직 리팩토링] (https://dev-in96.tistory.com/83)
+[리팩토링 이후 Recoverable Error해결] (https://dev-in96.tistory.com/84)
 
 ---
 
@@ -230,7 +232,8 @@ Debounce를 적용하여 일정 시간 동안 입력이 멈춘 경우에만 API 
 - 사용자 입력 경험 개선
 
 자세한 내용은 블로그 글에서 확인할 수 있습니다.
-검색 API 500 에러 해결: https://dev-in96.tistory.com/80
+
+[검색 API 500 에러 해결] (https://dev-in96.tistory.com/80)
 
 ---
 
@@ -255,6 +258,7 @@ API 라우트를 `/api` 경로로 분리하여 페이지 라우팅과 명확히 
 - App Router 구조에 대한 이해도 향상
 
 자세한 내용은 블로그 글에서 확인할 수 있습니다.
-App Router 구조 오해로 인한 Build 오류 해결: https://dev-in96.tistory.com/72
+
+[App Router 구조 오해로 인한 Build 오류 해결] (https://dev-in96.tistory.com/72)
 
 ## 9. 개선 예정 사항
