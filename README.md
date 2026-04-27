@@ -10,12 +10,17 @@ MenuMate는 일상 속 메뉴를 결정하는 상황에서 사용자가 쉽게 �
 
 이를 통해 사용자는 메뉴 탐색부터 레시피 확인까지의 과정을 자연스러운 흐름으로 경험할 수 있습니다.
 
+#### [검색화면]
+
 ![검색 화면](public/docs/images/search.png)
+
+#### [레시피 화면]
+
 ![레시피 화면](public/docs/images/recipe.png)
 
 ## 2. 배포 링크
 
-배포링크 - https://menu-mate.vercel.app
+배포링크 - https://menu-mate-puce.vercel.app
 
 ## 3. 프로젝트 기간 및 진행 방식
 
