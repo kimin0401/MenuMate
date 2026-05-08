@@ -4,12 +4,12 @@ type BrandLogoProps = {
   className?: string;
 };
 
-export const BrandLogo = ({ className }: BrandLogoProps) => {
+export const BrandLogo = ({ className = 'h-10' }: BrandLogoProps) => {
   return (
     <img
       src="/logo/MenuMateLogo.svg"
       alt="MenuMate logo"
-      className={cn('h-10 w-auto select-none', className)}
+      className={cn('w-auto select-none', className)}
     />
   );
 };
