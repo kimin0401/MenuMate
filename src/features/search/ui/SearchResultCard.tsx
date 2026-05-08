@@ -29,7 +29,7 @@ export const SearchResultCard = ({ result }: Props) => {
           href={getRecipeDetailHref(result.id, result.name)}
           className="text-sm font-medium text-blue-600 hover:underline"
         >
-          상세 레시피 페이지
+          상세 레시피 보기
         </Link>
       </div>
     </li>

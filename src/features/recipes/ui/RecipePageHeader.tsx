@@ -31,7 +31,7 @@ export const RecipePageHeader = () => {
       </button>
 
       <Link href="/" aria-label="메인 페이지로 이동" className="shrink-0">
-        <BrandLogo />
+        <BrandLogo className="h-8 md:h-10" />
       </Link>
     </div>
   );
